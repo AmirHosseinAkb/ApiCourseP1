@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Common.Utilities;
+using Entities.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data
 {
@@ -10,7 +12,13 @@ namespace Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            var entitiesAssembly = typeof(IEntity).Assembly;
+            modelBuilder.ApplyConfigurationsFromAssembly(entitiesAssembly);
+            modelBuilder.RegisterAllEntities<IEntity>(entitiesAssembly);
+            modelBuilder.AddRestrictDeleteBehaviorConvention();
+            modelBuilder.AddPluralizingTableNameConvention();
+            modelBuilder.AddGuidDefaultValueSqlConvention();
+             
             base.OnModelCreating(modelBuilder);
         }
     }
