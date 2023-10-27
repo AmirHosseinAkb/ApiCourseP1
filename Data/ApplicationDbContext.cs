@@ -18,7 +18,6 @@ namespace Data
             modelBuilder.AddRestrictDeleteBehaviorConvention();
             modelBuilder.AddPluralizingTableNameConvention();
             modelBuilder.AddGuidDefaultValueSqlConvention();
-             
             base.OnModelCreating(modelBuilder);
         }
     }
