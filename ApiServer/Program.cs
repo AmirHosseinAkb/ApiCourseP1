@@ -1,5 +1,7 @@
 
 using Data;
+using Data.Contracts;
+using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiServer
@@ -16,6 +18,8 @@ namespace ApiServer
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApiLocalConnection"))
             ) ;
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
