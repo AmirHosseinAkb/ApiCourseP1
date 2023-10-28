@@ -60,7 +60,12 @@ namespace WebFramework.Api
         public ApiResult(bool isSucceeded, ApiResultStatusCode apiResultStatusCode,TData data, string? message = null)
             :base(isSucceeded, apiResultStatusCode, message)
         {
-           
+            Data = data;
+        }
+        
+        public static implicit operator ApiResult<TData> (TData data)
+        {
+            return new ApiResult<TData>(true, ApiResultStatusCode.Success, data);
         }
 
         public static implicit operator ApiResult<TData>(ContentResult result)
