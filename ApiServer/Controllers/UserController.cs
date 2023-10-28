@@ -2,6 +2,7 @@
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebFramework.Api;
 
 namespace ApiServer.Controllers
 {
@@ -34,7 +35,7 @@ namespace ApiServer.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(int id, User user,CancellationToken cancellationToken)
+        public async Task<ApiResult> Update(int id, User user,CancellationToken cancellationToken)
         {
             var currUser =await _userRepository.GetByIdAsync(cancellationToken,id);
             if(currUser != null)
