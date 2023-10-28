@@ -1,7 +1,6 @@
 ﻿using Common;
 using Common.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace WebFramework.Api
 {
@@ -55,13 +54,50 @@ namespace WebFramework.Api
         }
     }
 
-    public class ApiResult<TData>:ApiResult where TData : ApiResult
+    public class ApiResult<TData>:ApiResult where TData : class
     {
         public TData Data { get; set; }
         public ApiResult(bool isSucceeded, ApiResultStatusCode apiResultStatusCode,TData data, string? message = null)
             :base(isSucceeded, apiResultStatusCode, message)
         {
            
+        }
+
+        public static implicit operator ApiResult<TData>(ContentResult result)
+        {
+            return new ApiResult<TData>(false, ApiResultStatusCode.Success,null, result.Content);
+        }
+
+        public static implicit operator ApiResult<TData>(OkResult result)
+        {
+            return new ApiResult<TData>(true, ApiResultStatusCode.Success, null);
+        }
+        public static implicit operator ApiResult<TData>(OkObjectResult result)
+        {
+            return new ApiResult<TData>(true, ApiResultStatusCode.Success, (TData)result.Value);
+        }
+        public static implicit operator ApiResult<TData>(BadRequestResult result)
+        {
+            return new ApiResult<TData>(false, ApiResultStatusCode.BadRequest, null);
+        }
+        public static implicit operator ApiResult<TData>(BadRequestObjectResult result)
+        {
+            string message = null;
+            if(result.Value is SerializableError errors)
+            {
+                var errorMessages = errors.SelectMany(e => (string[])e.Value);
+                message = string.Join("|", errorMessages);
+            }
+            return new ApiResult<TData>(false,ApiResultStatusCode.BadRequest,(TData)result.Value,message);
+        }
+
+        public static implicit operator ApiResult<TData>(NotFoundResult result)
+        {
+            return new ApiResult<TData>(false, ApiResultStatusCode.NotFound, null);
+        }
+        public static implicit operator ApiResult<TData>(NotFoundObjectResult result)
+        {
+            return new ApiResult<TData>(false,ApiResultStatusCode.NotFound,(TData)result.Value,null);
         }
     }
 }
