@@ -3,6 +3,8 @@ using Data;
 using Data.Contracts;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using WebFramework.Filters;
 
 namespace ApiServer
 {
@@ -12,6 +14,7 @@ namespace ApiServer
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllers();
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

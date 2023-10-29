@@ -1,12 +1,17 @@
-﻿using Data.Contracts;
+﻿using Common.Utilities;
+using Data.Contracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebFramework.Api;
+using WebFramework.DTOs;
+using WebFramework.Filters;
 
 namespace ApiServer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ApiResultFilter]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -16,25 +21,37 @@ namespace ApiServer.Controllers
         }
 
         [HttpGet]
-        public Task<List<User>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
         {
-            return _userRepository.TableNoTracking.ToListAsync(cancellationToken);
+            return await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
         }
 
         [HttpGet("{id}")]
-        public Task<User> Get(int id,CancellationToken cancellationToken)
+        public async Task<ActionResult> Get(int id,CancellationToken cancellationToken)
         {
-            return _userRepository.GetByIdAsync(cancellationToken, id);
+           var user=await _userRepository.GetByIdAsync(cancellationToken, id);
+            if (user == null)
+                return NotFound();
+            return Ok(user);
         }
 
         [HttpPost]
-        public async Task Create(User user,CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> Create(UserDto user,CancellationToken cancellationToken)
         {
-            await _userRepository.AddAsync(user, cancellationToken);
+            var newUser = new User()
+            {
+                Age = user.Age,
+                FullName = user.FullName,
+                Gender = user.Gender,
+                PasswordHash = SecurityHelper.HashPasswordSHA256(user.Password),
+                UserName = user.UserName,
+            };
+            await _userRepository.AddAsync(newUser, cancellationToken);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(int id, User user,CancellationToken cancellationToken)
+        public async Task<ApiResult> Update(int id, User user,CancellationToken cancellationToken)
         {
             var currUser =await _userRepository.GetByIdAsync(cancellationToken,id);
             if(currUser != null)
@@ -51,6 +68,7 @@ namespace ApiServer.Controllers
             return BadRequest();
         }
 
+        
         [HttpDelete]
         public async Task<IActionResult> Delete(int id,CancellationToken cancellationToken)
         {
@@ -60,7 +78,7 @@ namespace ApiServer.Controllers
                await _userRepository.DeleteAsync(user, cancellationToken);
                 return Ok();
             }
-            return BadRequest();
+            return NotFound();
         }
     }
 }
