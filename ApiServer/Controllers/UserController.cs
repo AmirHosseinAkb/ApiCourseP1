@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebFramework.Api;
 using WebFramework.DTOs;
+using WebFramework.Filters;
 
 namespace ApiServer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ApiResultFilter]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -19,18 +21,18 @@ namespace ApiServer.Controllers
         }
 
         [HttpGet]
-        public async Task<ApiResult<List<User>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
         {
             return await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
         }
 
         [HttpGet("{id}")]
-        public async Task<ApiResult<User>> Get(int id,CancellationToken cancellationToken)
+        public async Task<ActionResult> Get(int id,CancellationToken cancellationToken)
         {
            var user=await _userRepository.GetByIdAsync(cancellationToken, id);
             if (user == null)
                 return NotFound();
-            return user;
+            return Ok(user);
         }
 
         [HttpPost]
@@ -45,7 +47,7 @@ namespace ApiServer.Controllers
                 UserName = user.UserName,
             };
             await _userRepository.AddAsync(newUser, cancellationToken);
-            return Ok(newUser);
+            return Ok();
         }
 
         [HttpPut]
@@ -66,8 +68,9 @@ namespace ApiServer.Controllers
             return BadRequest();
         }
 
+        
         [HttpDelete]
-        public async Task<ApiResult> Delete(int id,CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete(int id,CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             if(user != null)
@@ -75,7 +78,7 @@ namespace ApiServer.Controllers
                await _userRepository.DeleteAsync(user, cancellationToken);
                 return Ok();
             }
-            return BadRequest();
+            return NotFound();
         }
     }
 }
