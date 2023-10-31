@@ -72,6 +72,10 @@ namespace Data.Repositories
             if (saveNow)
                 await _context.SaveChangesAsync(cancellationToken);
         }
+        public  Task<bool> IsExistAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
+        {
+            return TableNoTracking.AnyAsync(expression,cancellationToken);
+        }
         #endregion
 
         #region Sync Methods

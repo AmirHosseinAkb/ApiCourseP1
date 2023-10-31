@@ -1,11 +1,13 @@
 ﻿using Common;
 using Common.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace WebFramework.Api
 {
     public class ApiResult
     {
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
         public bool IsSucceeded { get; set; }
         public ApiResultStatusCode  ApiResultStatusCode { get; set; }
@@ -56,6 +58,7 @@ namespace WebFramework.Api
 
     public class ApiResult<TData>:ApiResult where TData : class
     {
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public TData Data { get; set; }
         public ApiResult(bool isSucceeded, ApiResultStatusCode apiResultStatusCode,TData data, string? message = null)
             :base(isSucceeded, apiResultStatusCode, message)

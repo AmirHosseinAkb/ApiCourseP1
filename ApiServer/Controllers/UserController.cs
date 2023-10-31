@@ -36,8 +36,10 @@ namespace ApiServer.Controllers
         }
 
         [HttpPost]
-        public async Task<ApiResult<User>> Create(UserDto user,CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(UserDto user,CancellationToken cancellationToken)
         {
+            if(await _userRepository.IsExistAsync(u=>u.UserName==user.UserName,cancellationToken))
+                return BadRequest("This User Name Exist In Advance");
             var newUser = new User()
             {
                 Age = user.Age,

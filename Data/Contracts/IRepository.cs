@@ -30,6 +30,7 @@ namespace Data.Contracts
         Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
         Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool saveNow = true);
         Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, params object[] ids);
+        Task<bool> IsExistAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken);
         Task LoadCollectionAsync<TProperty>(TEntity entity, Expression<Func<TEntity, IEnumerable<TProperty>>> collectionProperty, CancellationToken cancellationToken) where TProperty : class;
         Task LoadReferenceAsync<TProperty>(TEntity entity, Expression<Func<TEntity, TProperty>> referenceProperty, CancellationToken cancellationToken) where TProperty : class;
         Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
