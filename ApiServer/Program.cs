@@ -5,6 +5,7 @@ using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebFramework.Filters;
+using WebFramework.Middlewares;
 
 namespace ApiServer
 {
@@ -25,6 +26,7 @@ namespace ApiServer
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             var app = builder.Build();
 
+            app.UseCustomExceptionHandler();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
