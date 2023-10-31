@@ -23,6 +23,7 @@ namespace ApiServer.Controllers
         [HttpGet]
         public async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
         {
+            return BadRequest();
             return await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
         }
 
@@ -38,8 +39,6 @@ namespace ApiServer.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(UserDto user,CancellationToken cancellationToken)
         {
-            if(await _userRepository.IsExistAsync(u=>u.UserName==user.UserName,cancellationToken))
-                return BadRequest("This User Name Exist In Advance");
             var newUser = new User()
             {
                 Age = user.Age,
@@ -74,6 +73,7 @@ namespace ApiServer.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id,CancellationToken cancellationToken)
         {
+            throw new Exception();
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             if(user != null)
             {
