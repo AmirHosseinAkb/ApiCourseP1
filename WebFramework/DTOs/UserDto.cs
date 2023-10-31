@@ -5,10 +5,15 @@ namespace WebFramework.DTOs
 {
     public class UserDto:IValidatableObject
     {
+        [Required]
         public string UserName { get; set; }
+        [Required]
         public string Password { get; set; }
+        [Required]
         public string FullName { get; set; }
+        [Required]
         public int Age { get; set; }
+        [Required]
         public GenderType Gender { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

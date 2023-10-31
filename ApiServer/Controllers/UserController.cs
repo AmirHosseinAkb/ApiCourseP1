@@ -36,7 +36,7 @@ namespace ApiServer.Controllers
         }
 
         [HttpPost]
-        public async Task<ApiResult<User>> Create(UserDto user,CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(UserDto user,CancellationToken cancellationToken)
         {
             var newUser = new User()
             {
