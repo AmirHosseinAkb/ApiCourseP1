@@ -27,8 +27,9 @@
         {
         }
 
+
         public BadRequestException(string message, Exception exception, object additionalData)
-            : base(ApiResultStatusCode.BadRequest, message, exception, additionalData)
+            : base(ApiResultStatusCode.BadRequest, message,System.Net.HttpStatusCode.BadRequest, exception, additionalData)
         {
         }
     }

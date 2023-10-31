@@ -6,7 +6,7 @@ namespace Common.Exceptions
     {
         public HttpStatusCode HttpStatusCode { get; set; }
         public ApiResultStatusCode ApiStatusCode { get; set; }
-        public object AdditionalData { get; set; }
+        public object? AdditionalData { get; set; }
 
         public AppException()
             : this(ApiResultStatusCode.ServerError)

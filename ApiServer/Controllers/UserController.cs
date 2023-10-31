@@ -23,6 +23,7 @@ namespace ApiServer.Controllers
         [HttpGet]
         public async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
         {
+            return BadRequest();
             return await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
         }
 
@@ -72,6 +73,7 @@ namespace ApiServer.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id,CancellationToken cancellationToken)
         {
+            throw new Exception();
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             if(user != null)
             {
