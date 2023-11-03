@@ -1,8 +1,10 @@
-﻿using Common.Utilities;
+﻿using Common.Exceptions;
+using Common.Utilities;
 using Data.Contracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Services.Jwt;
 using WebFramework.Api;
 using WebFramework.DTOs;
 using WebFramework.Filters;
@@ -15,9 +17,11 @@ namespace ApiServer.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
-        public UserController(IUserRepository userRepository)
+        private readonly IJwtService _jwtService;
+        public UserController(IUserRepository userRepository,IJwtService jwtService)
         {
             _userRepository = userRepository;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -35,6 +39,17 @@ namespace ApiServer.Controllers
                 return NotFound();
             return Ok(user);
         }
+
+        [HttpGet("[action]")]
+        public async Task<string> GenerateToken(string userName, string password, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetByUserAndPass(userName, password, cancellationToken);
+            if (user is null)
+                throw new BadRequestException();
+            var jwt = _jwtService.Generate(user);
+            return jwt;
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> Create(UserDto user,CancellationToken cancellationToken)

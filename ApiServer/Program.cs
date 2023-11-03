@@ -4,6 +4,7 @@ using Data.Contracts;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Services.Jwt;
 using WebFramework.Filters;
 using WebFramework.Middlewares;
 
@@ -24,6 +25,7 @@ namespace ApiServer
             ) ;
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IJwtService, JwtService>();
             var app = builder.Build();
 
             app.UseCustomExceptionHandler();

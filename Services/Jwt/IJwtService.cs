@@ -4,6 +4,6 @@ namespace Services.Jwt
 {
     public interface IJwtService
     {
-        Task<string> Generate(User user);
+        string Generate(User user);
     }
 }

@@ -8,9 +8,9 @@ namespace Services.Jwt
 {
     public class JwtService:IJwtService
     {
-        public async Task<string> Generate(User user)
+        public string Generate(User user)
         {
-            var secretKey = "MySecretKeyForMyWebsite";
+            var secretKey = "this is my custom Secret key for authentication";
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 , SecurityAlgorithms.HmacSha256Signature);
             var claims = _getClaims(user);
