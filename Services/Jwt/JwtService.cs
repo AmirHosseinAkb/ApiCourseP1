@@ -24,6 +24,9 @@ namespace Services.Jwt
                 IssuedAt = DateTime.Now,
                 Subject = new ClaimsIdentity(claims)
             };
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(descriptor);
             var jwt = tokenHandler.WriteToken(securityToken);
