@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,7 @@ namespace WebFramework.Configuration;
 
 public static class IServiceCollectionExtensions
 {
-    public static void AddJwtAuthentication(this IServiceCollection services)
+    public static void AddJwtAuthentication(this IServiceCollection services,SiteSettings siteSettings)
     {
         services.AddAuthentication(options =>
         {

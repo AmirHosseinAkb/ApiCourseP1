@@ -1,25 +1,33 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Common;
 using Entities;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Services.Jwt
 {
     public class JwtService:IJwtService
     {
+        private readonly SiteSettings _siteSettings;
+
+        public JwtService(IOptionsSnapshot<SiteSettings> siteSettings)
+        {
+            _siteSettings = siteSettings.Value;
+        }
         public string Generate(User user)
         {
-            var secretKey = "this is my custom Secret key for authentication";
+            var secretKey = _siteSettings.JwtSettings.SecretKey;
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 , SecurityAlgorithms.HmacSha256Signature);
             var claims = _getClaims(user);
             var descriptor = new SecurityTokenDescriptor()
             {
-                Issuer = "MyWebsite",
-                Audience = "MyWebsite",
-                NotBefore = DateTime.Now,
-                Expires = DateTime.Now.AddDays(14),
+                Issuer = _siteSettings.JwtSettings.Issuer,
+                Audience = _siteSettings.JwtSettings.Audience,
+                NotBefore = DateTime.Now.AddMinutes(_siteSettings.JwtSettings.NotBeforeMinutes),
+                Expires = DateTime.Now.AddDays(_siteSettings.JwtSettings.ExpireDays),
                 SigningCredentials = signingCredentials,
                 IssuedAt = DateTime.Now,
                 Subject = new ClaimsIdentity(claims)

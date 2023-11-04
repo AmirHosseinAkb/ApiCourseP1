@@ -1,4 +1,5 @@
 
+using Common;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
@@ -16,7 +17,12 @@ namespace ApiServer
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
+
+            SiteSettings siteSettings=builder.Configuration.GetSection(nameof(SiteSettings)).Get<SiteSettings>()!; 
+
+
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add(new AuthorizeFilter());
@@ -30,8 +36,10 @@ namespace ApiServer
             ) ;
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.Configure<SiteSettings>(builder.Configuration.GetSection(nameof(SiteSettings)));
             builder.Services.AddScoped<IJwtService, JwtService>();
-            builder.Services.AddJwtAuthentication();
+
+            builder.Services.AddJwtAuthentication(siteSettings);
             var app = builder.Build();
 
             app.UseCustomExceptionHandler();
