@@ -1,9 +1,13 @@
 
+using Common;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Services.Jwt;
+using WebFramework.Configuration;
 using WebFramework.Filters;
 using WebFramework.Middlewares;
 
@@ -13,8 +17,16 @@ namespace ApiServer
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddControllers();
+
+            SiteSettings siteSettings=builder.Configuration.GetSection(nameof(SiteSettings)).Get<SiteSettings>()!; 
+
+
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add(new AuthorizeFilter());
+            });
             
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -24,6 +36,10 @@ namespace ApiServer
             ) ;
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.Configure<SiteSettings>(builder.Configuration.GetSection(nameof(SiteSettings)));
+            builder.Services.AddScoped<IJwtService, JwtService>();
+
+            builder.Services.AddJwtAuthentication(siteSettings);
             var app = builder.Build();
 
             app.UseCustomExceptionHandler();
@@ -35,6 +51,7 @@ namespace ApiServer
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
