@@ -2,6 +2,7 @@
 using Data;
 using Data.Contracts;
 using Data.Repositories;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Services.Jwt;
@@ -16,7 +17,10 @@ namespace ApiServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add(new AuthorizeFilter());
+            });
             
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

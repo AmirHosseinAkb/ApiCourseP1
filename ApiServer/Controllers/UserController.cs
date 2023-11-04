@@ -2,6 +2,7 @@
 using Common.Utilities;
 using Data.Contracts;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Jwt;
@@ -27,7 +28,6 @@ namespace ApiServer.Controllers
         [HttpGet]
         public async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
         {
-            return BadRequest();
             return await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
         }
 
@@ -41,7 +41,8 @@ namespace ApiServer.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<string> GenerateToken(string userName, string password, CancellationToken cancellationToken)
+        [AllowAnonymous]
+        public async Task<string> GetToken(string userName, string password, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByUserAndPass(userName, password, cancellationToken);
             if (user is null)
